@@ -262,7 +262,7 @@ public class LinHashMap <K, V>
      */
     private void print ()
     {
-        
+        int overflowCt=0;
         boolean firstValue=false;
         
         out.println ("");
@@ -275,21 +275,32 @@ public class LinHashMap <K, V>
         for(int i = 0; i < hTable.size(); i++) {
             Bucket currentBucket = hTable.get(i);
             
-            out.print("Bucket "+i+": ");
-            firstValue=true;
-            
-           for (int j = 0; j < currentBucket.nKeys; j++) {
-                if (firstValue)
-                {
-                    firstValue=false;
-                }
-                else
-                {
-                    out.print("          ");
-                }
-                out.println("("+currentBucket.key[j]+","+currentBucket.value[j]+")");
+            if (currentBucket.nKeys==0)
+            {
+                out.println("Bucket "+i+": Empty");
             }
-
+            else
+            {
+                out.println("Bucket "+i+": Main");
+            }
+            firstValue=true;
+            overflowCt=0;
+            
+           while(currentBucket != null) {
+               if (!firstValue)
+               {
+                   out.println("          Overflow "+overflowCt);
+               }
+               else
+               {
+                   firstValue=false;
+               }
+               overflowCt++;
+                for (int j = 0; j < currentBucket.nKeys; j++) {
+                     out.println("          ("+currentBucket.key[j]+","+currentBucket.value[j]+")");
+                 }
+                 currentBucket=currentBucket.next;
+           }
             
             if (firstValue)
             {
