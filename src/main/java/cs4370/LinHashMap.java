@@ -70,6 +70,34 @@ public class LinHashMap <K, V>
      */
     private int split = 0;
 
+    
+    final class MyEntry<K, V> implements Map.Entry<K, V> {
+        private final K key;
+        private V value;
+
+        public MyEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            V old = this.value;
+            this.value = value;
+            return old;
+        }
+    }
+    
     /********************************************************************************
      * Construct a hash table that uses Linear Hashing.
      * @param classK    the class for keys (K)
@@ -97,7 +125,8 @@ public class LinHashMap <K, V>
     {
         List<K> keyList = new ArrayList();
         List<V> valueList = new ArrayList();
-        Map <K, V> map = new HashMap<K, V> ();
+        Map.Entry<K,V> entry=null;
+        //Map <K, V> map;
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
         for(int i = 0; i < hTable.size(); i++) {
@@ -112,9 +141,11 @@ public class LinHashMap <K, V>
         }
 
         for(int i = 0; i < keyList.size(); i++){
-            map.put(keyList.get(i), valueList.get(i));
+            out.println("Add ("+keyList.get(i)+","+valueList.get(i)+")");
+            entry=new AbstractMap.SimpleEntry<K,V>(keyList.get(i), valueList.get(i));
+            enSet.add(entry);
         }
-        enSet.add((java.util.Map.Entry<K, V>)map);
+        
 
         return enSet;
     } // entrySet
@@ -231,12 +262,45 @@ public class LinHashMap <K, V>
      */
     private void print ()
     {
+        
+        boolean firstValue=false;
+        
+        out.println ("");
+        out.println ("");
         out.println ("Hash Table (Linear Hashing)");
+        out.println ("Format: (key,value)");
         out.println ("-------------------------------------------");
 
-        //  T O   B E   I M P L E M E N T E D
+ 
+        for(int i = 0; i < hTable.size(); i++) {
+            Bucket currentBucket = hTable.get(i);
+            
+            out.print("Bucket "+i+": ");
+            firstValue=true;
+            
+           for (int j = 0; j < currentBucket.nKeys; j++) {
+                if (firstValue)
+                {
+                    firstValue=false;
+                }
+                else
+                {
+                    out.print("          ");
+                }
+                out.println("("+currentBucket.key[j]+","+currentBucket.value[j]+")");
+            }
+
+            
+            if (firstValue)
+            {
+                out.println("");
+            }
+        }
+
+        
 
         out.println ("-------------------------------------------");
+ 
     } // print
 
     /********************************************************************************
@@ -268,7 +332,10 @@ public class LinHashMap <K, V>
 
         int totalKeys    = 30;
         boolean RANDOMLY = false;
-
+        Set <Map.Entry <Integer, Integer>> enSet;
+        Map.Entry <Integer,Integer> entry;
+        Iterator enSetIterator;
+        
         LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class);
         if (args.length == 1) totalKeys = Integer.valueOf (args [0]);
 
@@ -279,6 +346,17 @@ public class LinHashMap <K, V>
             for (int i = 1; i <= totalKeys; i += 2) ht.put (i, i * i);
         } // if
 
+        //test entry set
+        //enSet=
+        enSet=ht.entrySet();
+        out.println("-----ENTRY SET-----##");
+        enSetIterator=enSet.iterator();
+        while (enSetIterator.hasNext())
+        {
+            entry=(Map.Entry <Integer,Integer>)enSetIterator.next();
+            out.println("("+entry.getKey()+","+entry.getValue()+")");
+        }
+        
         ht.print ();
         for (int i = 0; i <= totalKeys; i++) {
             out.println ("key = " + i + " value = " + ht.get (i));
