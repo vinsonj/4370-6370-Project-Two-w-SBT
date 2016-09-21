@@ -14,7 +14,7 @@ public class BpTreeTest extends TestCase{
     BpTreeMap <Integer, Integer> bpt; 
 
     protected void setUp(){
-	int totalKeys = 9;
+	int totalKeys = 20;
 	boolean RANDOMLY = false;
 	bpt1 = new BpTreeMap <> (Integer.class, Integer.class);
 	bpt2 = new BpTreeMap <> (Integer.class, Integer.class);
@@ -24,7 +24,8 @@ public class BpTreeTest extends TestCase{
 	    Random rng = new Random ();
 	    for (int i = 1; i <= totalKeys; i += 2) bpt.put (rng.nextInt (2 * totalKeys), i * i);
 	} else {
-	    for (int i = 1; i <= totalKeys; i += 2) bpt.put (i, i * i);
+	    for (int i = 2; i <= totalKeys; i += 2) bpt1.put (i * i, i * i);
+	    for (int i = 1; i <= totalKeys; i += 2) bpt1.put (i * i, i * i);
 	} // if
     }
     
