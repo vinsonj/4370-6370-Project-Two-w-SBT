@@ -1,4 +1,4 @@
-
+package cs4370;
 /*****************************************************************************************
  * @file  MovieDB.java
  *
@@ -22,7 +22,7 @@ class MovieDB
     {
 	out.println ();
 
-	Table movie = new Table ("movie", "title year length genre studioName producerNo",
+	/*	Table movie = new Table ("movie", "title year length genre studioName producerNo",
 				 "String Integer Integer String String Integer", "title year");
 
 	Table cinema = new Table ("cinema", "title year length genre studioName producerNo",
@@ -38,7 +38,53 @@ class MovieDB
 				     "Integer String String Float", "certNo");
 
 	Table studio = new Table ("studio", "name address presNo",
-				  "String String Integer", "name");
+				  "String String Integer", "name");*/
+
+	String [] attributes_movie = {"title", "year", "length", "genre", "studioName", "producerNo"};
+	String [] attributes_cinema = {"title","year","length","genre","studioName","producerNo"};	
+	String [] attributes_movieStar = {"name","address","gender","birthdate"};
+	String [] attributes_starsIn = {"movieTitle","movieYear","starName"};
+	String [] attributes_movieExec = {"certNo", "name","address","fee"};
+	String [] attributes_studio =  {"name","address","presNo"};
+	    
+	Class [] domains_movie = {String.class,Integer.class,Integer.class,String.class,String.class, Integer.class};
+	Class [] domains_cinema = {String.class, Integer.class, Integer.class, String.class, String.class, Integer.class};
+	Class [] domains_movieStar = {String.class, String.class, Character.class, String.class};
+	Class [] domains_starsIn = {String.class, Integer.class, String.class};
+	Class [] domains_movieExec = {Integer.class, String.class, String.class, Float.class };
+	Class [] domains_studio = {String.class, String.class, Integer.class};
+	
+	String [] key_movie = {"title","year"};
+	String [] key_cinema = {"title","year"};
+	String [] key_movieStar = {"name"};
+	String [] key_starsIn = {"movieTitle","movieYear","starName"};
+	String [] key_movieExec = {"certNo"};
+	String [] key_studio = {"name"};
+
+	/*Table movie = new Table ("movie", "title year length genre studioName producerNo",
+				 "String Integer Integer String String Integer", "title year");
+
+	Table cinema = new Table ("cinema", "title year length genre studioName producerNo",
+				  "String Integer Integer String String Integer", "title year");
+
+	Table movieStar = new Table ("movieStar", "name address gender birthdate",
+				     "String String Character String", "name");
+
+	Table starsIn = new Table ("starsIn", "movieTitle movieYear starName",
+				   "String Integer String", "movieTitle movieYear starName");
+
+	Table movieExec = new Table ("movieExec", "certNo name address fee",
+				     "Integer String String Float", "certNo");
+
+	Table studio = new Table ("studio", "name address presNo",
+	"String String Integer", "name");*/
+
+	Table movie = new Table("movie",attributes_movie,domains_movie,key_movie);
+	Table cinema = new Table("cinema",attributes_cinema,domains_cinema,key_cinema);
+	Table movieStar = new Table("movieStar",attributes_movieStar,domains_movieStar,key_movieStar);
+	Table starsIn = new Table("starsIn",attributes_starsIn,domains_starsIn,key_starsIn);
+	Table movieExec = new Table("movieExec",attributes_movieExec,domains_movieExec,key_movieExec);
+	Table studio = new Table("studio",attributes_studio,domains_studio,key_studio);
 
 	Comparable [] film0 = { "Star_Wars", 1977, 124, "sciFi", "Fox", 12345 };
 	Comparable [] film1 = { "Star_Wars_2", 1980, 124, "sciFi", "Fox", 12345 };
@@ -104,18 +150,18 @@ class MovieDB
 	t_project.print ();
 
 	//--------------------- select: equals, &&
-
+	/*
 	out.println ();
 	Table t_select = movie.select (t -> t[movie.col("title")].equals ("Star_Wars") &&
 				       t[movie.col("year")].equals (1977));
 	t_select.print ();
-
+	*/
 	//--------------------- select: <
-
+	/*
 	out.println ();
 	Table t_select2 = movie.select (t -> (Integer) t[movie.col("year")] < 1980);
 	t_select2.print ();
-
+	*/
 	//--------------------- indexed select: key
 
 	out.println ();

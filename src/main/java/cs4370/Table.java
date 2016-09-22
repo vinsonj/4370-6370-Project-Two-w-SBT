@@ -1,5 +1,4 @@
-
-
+package cs4370;
 
 /****************************************************************************************
  * @file  Table.java
@@ -65,7 +64,7 @@ public class Table
     /** Index into tuples (maps key to tuple number).
      */
     private final Map <KeyType, Comparable []> index;
-
+    //private final Map<Comparable[], Comparable[]> index;
     //----------------------------------------------------------------------------------
     // Constructors
     //----------------------------------------------------------------------------------
@@ -78,6 +77,7 @@ public class Table
      * @param _domain     the string containing attribute domains (data types)
      * @param _key        the primary key
      */
+    
     public Table (String _name, String [] _attribute, Class [] _domain, String [] _key)
     {
 	name      = _name;
@@ -85,8 +85,9 @@ public class Table
 	domain    = _domain;
 	key       = _key;
 	tuples    = new ArrayList <> ();
-	index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
+	//index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	//index     = new BpTreeMap <> ();
+	index     = new LinHashMap <> (KeyType.class, Comparable [].class);
 	//index = new HashMap<>(KeyType.class, Comparable [].class);
     } // constructor
 
