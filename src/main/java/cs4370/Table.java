@@ -318,6 +318,7 @@ public class Table
 	for (int i = 0; i<table2Attributes.length; i++){
 	    table2Attributes[i] = table2.attribute[i];
 	}
+	
 	for (String s1 : attribute){
 	    for (int i = 0; i < table2Attributes.length; i++){//String s2 : table2.attribute){
 		if(s1.equals(table2Attributes[i])){
@@ -325,8 +326,10 @@ public class Table
 		}
 	    }
 	}
+	/*return new Table (name + count++, ArrayUtil.concat (attribute, table2Attributes),
+	  ArrayUtil.concat (domain, table2.domain), key, rows);*/
 	return new Table (name + count++, ArrayUtil.concat (attribute, table2Attributes),
-			  ArrayUtil.concat (domain, table2.domain), key, rows);
+			  ArrayUtil.concat (domain, table2.domain), ArrayUtil.concat(attribute,table2Attributes), rows);
     } // join
  
     /************************************************************************************

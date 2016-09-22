@@ -96,6 +96,8 @@ class MovieDB
 	movie.insert (film2);
 	movie.insert (film3);
 	movie.print ();
+	System.out.println("movie.printIndex():");
+	movie.printIndex();
 
 	Comparable [] film4 = { "Galaxy_Quest", 1999, 104, "comedy", "DreamWorks", 67890 };
 	out.println ();
@@ -103,6 +105,8 @@ class MovieDB
 	cinema.insert (film3);
 	cinema.insert (film4);
 	cinema.print ();
+	System.out.println("cinema.printIndex():");
+	cinema.printIndex();
 
 	Comparable [] star0 = { "Carrie_Fisher", "Hollywood", 'F', "9/9/99" };
 	Comparable [] star1 = { "Mark_Hamill", "Brentwood", 'M', "8/8/88" };
@@ -112,17 +116,23 @@ class MovieDB
 	movieStar.insert (star1);
 	movieStar.insert (star2);
 	movieStar.print ();
+	System.out.println("movieStar.printIndex():");
+	movieStar.printIndex();
 
 	Comparable [] cast0 = { "Star_Wars", 1977, "Carrie_Fisher" };
 	out.println ();
 	starsIn.insert (cast0);
 	starsIn.print ();
+	System.out.println("starsIn.printIndex():");
+	starsIn.printIndex();
 
 	Comparable [] exec0 = { 9999, "S_Spielberg", "Hollywood", 10000.00 };
 	out.println ();
 	movieExec.insert (exec0);
 	movieExec.print ();
-
+	System.out.println("movieExec.printIndex():");
+	movieExec.printIndex();
+	
 	Comparable [] studio0 = { "Fox", "Los_Angeles", 7777 };
 	Comparable [] studio1 = { "Universal", "Universal_City", 8888 };
 	Comparable [] studio2 = { "DreamWorks", "Universal_City", 9999 };
@@ -131,7 +141,9 @@ class MovieDB
 	studio.insert (studio1);
 	studio.insert (studio2);
 	studio.print ();
-
+	System.out.println("studio.printIndex():");
+	studio.printIndex();
+	/*
 	System.out.println("Going to start saving.");
 	
 	movie.save ();
@@ -140,6 +152,7 @@ class MovieDB
 	starsIn.save ();
 	movieExec.save ();
 	studio.save ();
+	*/
 
 	movieStar.printIndex ();
 
@@ -186,11 +199,22 @@ class MovieDB
 	Table t_join = movie.join ("studioName", "name", studio);
 	t_join.print ();
 
+	out.println("index print after join");
+	t_join.printIndex();
+	
+
+	/*
+	out.println ();
+	Table t_iselectjoin = t_join.select (new KeyType ("7777"));
+	t_iselectjoin.print ();
+	*/
 	//--------------------- natural join: movie JOIN studio
 
 	out.println ();
 	Table t_join2 = movie.join (cinema);
 	t_join2.print ();
+
+	
 
     } // main
 
