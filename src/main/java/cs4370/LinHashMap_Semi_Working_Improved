@@ -168,13 +168,17 @@ public class LinHashMap <K, V>
         out.println ("LinearHashMap.put: key = " + key + ", h() = " + indexHash + ", value = " + value);
 
         insertionBucket = hTable.get(indexHash);  //insertion bucket
+        if(insertAtInsertionBucket(key, value)) itemsInserted++;
+	
+	else{
 
-        if (insertionBucket.nKeys == SLOTS) {
+        //Now decide if split is necessary and add new bucket.
+        //if ( ((float) itemsInserted/ (hTable.size() * SLOTS)) > loadFactor) {
             newBucket = new Bucket();
             newBucket.activeBucket = newBucket;
             hTable.add(newBucket);
             reallocate(activeBucket);
-
+	    
             //increase split
             split++;
             if ( split == mod1) {
@@ -183,25 +187,25 @@ public class LinHashMap <K, V>
                 mod2 = mod1 * 2;
             }
         }
-        insertionBucket = hTable.get(indexHash);
-        insertAtInsertionBucket(key, value);
-        itemsInserted++;
         return null;
     } // put
 
     /*
      * Adds a key, value pair at the insertion bucket, adding an overflow bucket if necessary.
      */
-    private void insertAtInsertionBucket(K key, V value){
+    private boolean insertAtInsertionBucket(K key, V value){
 
-        if (insertionBucket.activeBucket.nKeys == SLOTS) { //create overflow bucket since insertion bucket is full
+        if (insertionBucket.nKeys >= SLOTS) return false;
+	/*else { //create overflow bucket since insertion bucket is full
             newBucket = new Bucket();
-            insertionBucket.activeBucket.next = newBucket;
+            insertionBucket.activeBucket.next = null;
             insertionBucket.activeBucket = newBucket;
-        }
+        }*/ 
+	
         //Now insert value and increment counter.
-        insertTuple(key, value, insertionBucket.activeBucket, insertionBucket.activeBucket.nKeys);
-        insertionBucket.activeBucket.nKeys++;
+        insertTuple(key, value, insertionBucket, insertionBucket.nKeys);
+        insertionBucket.nKeys++;
+	return true;
     }
 
     /* This method splits a bucket and distributes the items to existing buckets based on the new modulus.
@@ -250,6 +254,21 @@ public class LinHashMap <K, V>
     /********************************************************************************
      * Print the hash table.
      */
+    /*private void print ()
+    {
+        out.println ("Hash Table (Linear Hashing)");
+        out.println ("-------------------------------------------");
+        Iterator it = entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            out.println(" Key is: " + entry.getKey() + " Value is: " + entry.getValue());
+        }
+
+        out.println ("-------------------------------------------");
+    }*/ // print
+	
+
+
     private void print ()
 
     {
@@ -285,7 +304,6 @@ public class LinHashMap <K, V>
         out.println ("\n-------------------------------------------");
 
     } // print
-
     /********************************************************************************
      * Hash the key using the low resolution hash function.
      * @param key  the key to hash
@@ -313,8 +331,13 @@ public class LinHashMap <K, V>
     public static void main (String [] args)
     {
 
-        int totalKeys    = 27;
+        int totalKeys    = 30;
         boolean RANDOMLY = false;
+
+	
+        Set <Map.Entry <Integer, Integer>> enSet;
+        Map.Entry <Integer,Integer> entry;
+        Iterator enSetIterator;
 
         LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class);
         if (args.length == 1) totalKeys = Integer.valueOf (args [0]);
@@ -326,6 +349,18 @@ public class LinHashMap <K, V>
             for (int i = 1; i <= totalKeys; i += 2) ht.put (i, i * i);
         } // if
 
+
+        //test entry set
+        //enSet=
+        enSet=ht.entrySet();
+        out.println("-----ENTRY SET-----##");
+        enSetIterator=enSet.iterator();
+        while (enSetIterator.hasNext())
+        {
+            entry=(Map.Entry <Integer,Integer>)enSetIterator.next();
+            out.println("("+entry.getKey()+","+entry.getValue()+")");
+        }
+	
         ht.print ();
         for (int i = 0; i <= totalKeys; i++) {
             out.println ("key = " + i + " value = " + ht.get (i));
