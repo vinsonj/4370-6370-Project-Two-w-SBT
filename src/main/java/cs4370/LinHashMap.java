@@ -165,7 +165,7 @@ public class LinHashMap <K, V>
         if (indexHash < split) {
             indexHash = h2 (key);
         }
-        out.println ("LinearHashMap.put: key = " + key + ", h() = " + indexHash + ", value = " + value);
+	//        out.println ("LinearHashMap.put: key = " + key + ", h() = " + indexHash + ", value = " + value);
 
         insertionBucket = hTable.get(indexHash);  //insertion bucket
 
