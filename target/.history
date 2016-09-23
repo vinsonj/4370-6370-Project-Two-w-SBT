@@ -201,3 +201,11 @@ compile
 exit
 compile
 run-main cs4370.MovieDB
+compile
+run-main cs4370.MovieDB
+exit
+compile
+run
+run-main cs430.MovieDB
+run-main cs4370.MovieDB
+exit
