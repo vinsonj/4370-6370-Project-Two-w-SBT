@@ -209,8 +209,9 @@ public class Table
 	out.println ("RA> " + name + ".select (" + keyVal + ")");
 
 	List <Comparable []> rows = new ArrayList <> ();
-
-	rows.add(this.index.get(keyVal));
+	Comparable[] row = this.index.get(keyVal);
+	
+	if(row!=null) rows.add(this.index.get(keyVal));
 	
 	return new Table (name + count++, attribute, domain, key, rows);
     } // select
@@ -296,32 +297,86 @@ public class Table
 	String [] t_attrs = attributes1.split (" ");
 	String [] u_attrs = attributes2.split (" ");
 
+	boolean joinOnPrimary1 = false;
+	boolean joinOnPrimary2 = false;
+
+	Set<String> keySet1 = new HashSet<String>(Arrays.asList(key));
+	Set<String> keySet2 = new HashSet<String>(Arrays.asList(table2.getKey()));
+	Set<String> attSet1 = new HashSet<String>(Arrays.asList(t_attrs));
+	Set<String> attSet2 = new HashSet<String>(Arrays.asList(u_attrs));
+
+	if(keySet1.equals(attSet1) ) joinOnPrimary1 = true;
+	else if(keySet2.equals(attSet2) ) joinOnPrimary2 = true;
+
 	List <Comparable []> rows = new ArrayList <> ();
 
 	System.out.println("begin");
 	int[] tb1ColsToCompare = new int[t_attrs.length];
+	int[] tb2ColsToCompare = new int[u_attrs.length];
+
+	
 	for (int i = 0; i < t_attrs.length; i++){//String attribute : t_attrs){
 	    tb1ColsToCompare[i] = this.col(t_attrs[i]);
+	    tb2ColsToCompare[i] = this.col(u_attrs[i]);
 	}
 
-	for(Comparable[] rowTable1 : tuples){
-	    Table equalRows = null;
-	    for(int k = 0; k < t_attrs.length; k++){
-		final int in = k;
-		if(equalRows == null){
-		    equalRows = table2.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
-		   
-		} else{
-		    equalRows = equalRows.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+	
+
+        if(joinOnPrimary1){
+	    System.out.println("joining primary 1");
+	    int i = 0;
+	    List<Comparable[]> tuples2 = table2.getTuples();
+	    Table selectTable = table2.project(attributes2);
+	    for (Comparable[] rowTable2 : selectTable.getTuples() ){
+		Comparable[] match;
+		Table found = select( new KeyType(rowTable2) );
+		out.println("Found: ");
+		found.print();
+		if( found.getTuples().size() != 0 ){
+		    List<Comparable[]> tupleFound = found.getTuples();
+		    Comparable[] tup  = tupleFound.get(0);
+		    Comparable[] tup2 = tuples2.get(i);
+		    match = ArrayUtil.concat(tup,tup2);
+		    rows.add(match);
 		}
+		i++;
+	    } 
+	}
+	else if(joinOnPrimary2){
+	    out.println("joining primary 2");
+	    int i=0;
+	    Table selectTable = this.project(attributes1);
+	    for(Comparable[] rowTable1 : selectTable.getTuples() ){
+		Comparable[] match;
+		Table found = table2.select(new KeyType(rowTable1));
+		if( found.getTuples().size() != 0){
+		    List<Comparable[]> tupleFound = found.getTuples();
+		    match = ArrayUtil.concat(tupleFound.get(0),tuples.get(i));
+		    rows.add(match);
+		}
+		i++;
 	    }
-	    for(Comparable[] equalRow : equalRows.getTuples()){
-		Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
-		rows.add(row);
+	}
+	else{
+	    for(Comparable[] rowTable1 : tuples){
+		Table equalRows = null;
+		for(int k = 0; k < t_attrs.length; k++){
+		    final int in = k;
+		    if(equalRows == null){
+			equalRows = table2.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+			
+		    } else{
+			equalRows = equalRows.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+		    }
+		}
+		for(Comparable[] equalRow : equalRows.getTuples()){
+		    Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
+		    rows.add(row);
+		}
 	    }
 	}
 	System.out.println("end");
-
+	
 	String[] table2Attributes = new String[table2.attribute.length];
 	for (int i = 0; i<table2Attributes.length; i++){
 	    table2Attributes[i] = table2.attribute[i];
@@ -555,6 +610,10 @@ public class Table
 	return true;
     } // compatible
 
+
+    public String [] getKey(){
+	return key;
+    }
     /************************************************************************************
      * Match the column and attribute names to determine the domains.
      *

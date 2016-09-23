@@ -293,13 +293,8 @@ public class Table
 	this.print();
 	table2.print();
 
-	boolean  selectOnKey;
-	
 	String [] t_attrs = attributes1.split (" ");
 	String [] u_attrs = attributes2.split (" ");
-
-	if( u_attrs.equals(table2.getKey() ) ) selectOnKey = true; //are we joining on table2's primary key? 
-	    
 
 	List <Comparable []> rows = new ArrayList <> ();
 
@@ -309,26 +304,22 @@ public class Table
 	    tb1ColsToCompare[i] = this.col(t_attrs[i]);
 	}
 
-		    
-
-	
-	for(int k = 0; k < t_attrs.length; k++){
-	    final int in = k;
-	    if(equalRows == null){
-		equalRows = table2.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
-			    
-	    } else{
-		equalRows = equalRows.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+	for(Comparable[] rowTable1 : tuples){
+	    Table equalRows = null;
+	    for(int k = 0; k < t_attrs.length; k++){
+		final int in = k;
+		if(equalRows == null){
+		    equalRows = table2.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+		   
+		} else{
+		    equalRows = equalRows.select(t -> t[table2.col(u_attrs[in])].equals(rowTable1[this.col(t_attrs[in])]));
+		}
+	    }
+	    for(Comparable[] equalRow : equalRows.getTuples()){
+		Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
+		rows.add(row);
 	    }
 	}
-	for(Comparable[] equalRow : equalRows.getTuples()){
-	    Comparable[] row = ArrayUtil.concat(rowTable1, equalRow);
-	    rows.add(row);
-	}
-		
-	
-	
-       	
 	System.out.println("end");
 
 	String[] table2Attributes = new String[table2.attribute.length];
@@ -542,10 +533,6 @@ public class Table
     // Private Methods
     //----------------------------------------------------------------------------------
 
-    private String [] getKey(){
-	return key;
-    }
-    
     /************************************************************************************
      * Determine whether the two tables (this and table2) are compatible, i.e., have
      * the same number of attributes each with the same corresponding domain.

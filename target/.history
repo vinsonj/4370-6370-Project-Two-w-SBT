@@ -209,3 +209,16 @@ run
 run-main cs430.MovieDB
 run-main cs4370.MovieDB
 exit
+compile
+ 
+compile
+run
+run-main cs4370.MovieDB
+compile
+run-main cs4370.MovieDB
+compile
+run-main cs4370.MovieDB
+compile
+run-main cs4370.MovieDB
+compile
+run-main cs4370.MovieDB
