@@ -291,8 +291,8 @@ public class Table
     {
 	out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
 		     + table2.name + ")");
-	this.print();
-	table2.print();
+	//this.print();
+	//table2.print();
 
 	String [] t_attrs = attributes1.split (" ");
 	String [] u_attrs = attributes2.split (" ");
@@ -310,7 +310,7 @@ public class Table
 
 	List <Comparable []> rows = new ArrayList <> ();
 
-	System.out.println("begin");
+	//System.out.println("begin");
 	int[] tb1ColsToCompare = new int[t_attrs.length];
 	int[] tb2ColsToCompare = new int[u_attrs.length];
 
@@ -323,15 +323,15 @@ public class Table
 	
 
         if(joinOnPrimary1){
-	    System.out.println("joining primary 1");
+	    //System.out.println("joining primary 1");
 	    int i = 0;
 	    List<Comparable[]> tuples2 = table2.getTuples();
 	    Table selectTable = table2.project(attributes2);
 	    for (Comparable[] rowTable2 : selectTable.getTuples() ){
 		Comparable[] match;
 		Table found = select( new KeyType(rowTable2) );
-		out.println("Found: ");
-		found.print();
+		//out.println("Found: ");
+		//found.print();
 		if( found.getTuples().size() != 0 ){
 		    List<Comparable[]> tupleFound = found.getTuples();
 		    Comparable[] tup  = tupleFound.get(0);
@@ -343,7 +343,7 @@ public class Table
 	    } 
 	}
 	else if(joinOnPrimary2){
-	    out.println("joining primary 2");
+	    //out.println("joining primary 2");
 	    int i=0;
 	    Table selectTable = this.project(attributes1);
 	    for(Comparable[] rowTable1 : selectTable.getTuples() ){
@@ -375,7 +375,7 @@ public class Table
 		}
 	    }
 	}
-	System.out.println("end");
+	//System.out.println("end");
 	
 	String[] table2Attributes = new String[table2.attribute.length];
 	for (int i = 0; i<table2Attributes.length; i++){
@@ -441,7 +441,7 @@ public class Table
 	    isRepeat = true;
 	}
 	attributesToCheck = attributesToCheck.trim();
-	System.out.println("attributesToCheck>" + attributesToCheck + "<");
+	//System.out.println("attributesToCheck>" + attributesToCheck + "<");
 
 	Table finalTable = table.project(attributesToCheck);
 
@@ -459,7 +459,7 @@ public class Table
 	for (int i = 0; i < attribute.length; i++) {
 	    if (attr.equals (attribute [i])) return i;
 	} // for
-	System.out.println("IN COL() didn't match");
+	//System.out.println("IN COL() didn't match");
 	return -1;  // not found
     } // col
 
@@ -723,9 +723,9 @@ public class Table
         for(Comparable [] other_movie : other.getTuples()){
                 Comparable test;
                 // System.out.println("Comparable 1: ");
-                for (Comparable p:movie){System.out.print(p.toString()+",");}
+                //for (Comparable p:movie){System.out.print(p.toString()+",");}
                 // System.out.println("\nComparable 2: ");
-                for (Comparable p:other_movie){System.out.print(p.toString()+",");}
+                //for (Comparable p:other_movie){System.out.print(p.toString()+",");}
                 // System.out.println("\n");
                 
                 allMatch=true;
@@ -736,7 +736,7 @@ public class Table
 			    if (!comp.toString().equals(other_movie[comparableCt].toString()))
 				{
 				    allMatch=false;
-				    System.out.println(comp.toString()+"!="+other_movie[comparableCt].toString());
+				    //System.out.println(comp.toString()+"!="+other_movie[comparableCt].toString());
 				    break;
 				}
 			    comparableCt++;

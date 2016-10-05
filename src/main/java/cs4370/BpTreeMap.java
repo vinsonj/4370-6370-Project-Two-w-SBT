@@ -32,7 +32,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     /** The maximum fanout (number of children) for a B+Tree node.
      *  May wish to increase for better performance for Program 3.
      */
-    private static final int ORDER = 5;
+    private static final int ORDER = 4;
 
     /** The maximum fanout (number of children) for a big B+Tree node.
      */
@@ -380,9 +380,11 @@ public class BpTreeMap <K extends Comparable <K>, V>
     @SuppressWarnings("unchecked")
     private Node insert (K key, V ref, Node n)
     {
+	/*
         out.println ("=============================================================");
         out.println ("insert: key = " + key);
         out.println ("=============================================================");
+	*/
         Node rt = null;
         
         if (n.isLeaf) {                                                      // handle leaf node level
@@ -402,7 +404,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
             int i = n.find (key);                                            // find "<=" position
             rt = insert (key, ref, (Node) n.ref[i]);                         // recursive call to insert, returning n's child
             if (DEBUG){
-                out.println ("insert: handle internal node level");
+                //out.println ("insert: handle internal node level");
             }  
             
             Node lt = (Node) n.ref[i];
@@ -414,7 +416,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
                     hasSplit = false; 
                     
                 }else {
-                    out.println("internal node split");
+                    //out.println("internal node split");
                    
                    
                     Node rightTree = split(lt.key[lt.nKeys-1], rt, n, false);
@@ -509,7 +511,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public static void main (String [] args)
     {
-        int totalKeys    = 40;                    
+        int totalKeys    = 50;                    
         boolean RANDOMLY = false;
 
         BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
@@ -518,12 +520,15 @@ public class BpTreeMap <K extends Comparable <K>, V>
         BpTreeMap <Integer, Integer> bpt2 = new BpTreeMap <> (Integer.class, Integer.class);
 
 	
-        if (args.length == 1) totalKeys = Integer.valueOf (args[0]);
+        //if (args.length == 1) totalKeys = Integer.valueOf (args[0]);
    
         if (RANDOMLY) {
             Random rng = new Random ();
-            for (int i = 1; i <= totalKeys; i += 2){
-                bpt.put (rng.nextInt (2 * totalKeys), i * i);
+            for (int i = 1; i <= totalKeys; i ++){
+                //bpt.put (rng.nextInt (2 * totalKeys), i * i);
+		int insert = rng.nextInt(2*totalKeys);
+		//out.print("inserting " + insert);
+		bpt.put (insert,i*i);
             }
         } else {
             for (int i = 1; i <= totalKeys; i += 2){
@@ -547,17 +552,23 @@ public class BpTreeMap <K extends Comparable <K>, V>
         } // if
 
         bpt.print (bpt.root, 0);
-	System.out.println("firstKey: " + bpt.firstKey() + ", lastKey: " + bpt.lastKey());
+	int lastKey = bpt.lastKey();
+	//System.out.println("firstKey: " + bpt.firstKey() + ", lastKey: " + bpt.lastKey());
+	/*
         for (int i = 1; i <= totalKeys; i++) {
             out.println ("key = " + i + " value = " + bpt.get (i));
         } // for
-        out.println ("-------------------------------------------");
-        out.println("LastKey:" + bpt.lastKey());
+	*/
+	for (int i=1;i<lastKey;i++){
+	    out.println("key = " + i + " value = " + bpt.get(i));
+	}
+        //out.println ("-------------------------------------------");
+        //out.println("LastKey:" + bpt.lastKey());
         //bpt.subMap(10, 15);
         //bpt.entrySet();
 	bpt2 = bpt.headMap(20);
 	System.out.println("printing head map: ");
-	bpt2.print( bpt2.root,0);
+	//bpt2.print( bpt2.root,0);
 	
 	bpt2 = bpt.tailMap(20);
 	System.out.println("printing tail map:");
@@ -566,7 +577,6 @@ public class BpTreeMap <K extends Comparable <K>, V>
 	bpt2 = bpt.subMap(10,30);
 	System.out.println("printing sub map:");
 	bpt2.print( bpt2.root, 0);
-
 	
         BpTreeMap j = (BpTreeMap)bpt.headMap(5);
         j.print(j.root, 0);

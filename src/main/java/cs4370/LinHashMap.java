@@ -313,7 +313,7 @@ public class LinHashMap <K, V>
     public static void main (String [] args)
     {
 
-        int totalKeys    = 27;
+        int totalKeys    = 50;
         boolean RANDOMLY = false;
 
         LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class);
