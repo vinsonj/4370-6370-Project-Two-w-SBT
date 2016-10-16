@@ -49,7 +49,7 @@ public class Table
     /** Array of attribute domains: a domain may be
      *  integer types: Long, Integer, Short, Byte
      *  real types: Double, Float
-     *  string types: Character, String
+    *  string types: Character, String
      */
     private final Class [] domain;
 
@@ -64,6 +64,8 @@ public class Table
     /** Index into tuples (maps key to tuple number).
      */
     private final Map <KeyType, Comparable []> index;
+
+    private final int indexType;
     //private final Map<Comparable[], Comparable[]> index;
     //----------------------------------------------------------------------------------
     // Constructors
@@ -76,17 +78,29 @@ public class Table
      * @param _attribute  the string containing attributes names
      * @param _domain     the string containing attribute domains (data types)
      * @param _key        the primary key
+     * @param map         the identifier for which type of index data structure to use
      */
     
-    public Table (String _name, String [] _attribute, Class [] _domain, String [] _key)
+    public Table (String _name, String [] _attribute, Class [] _domain, String [] _key, int map)
     {
 	name      = _name;
 	attribute = _attribute;
 	domain    = _domain;
 	key       = _key;
 	tuples    = new ArrayList <> ();
+	indexType = map;
+	switch (map)
+	    {
+	    case 1: index = new TreeMap<>();
+		break;
+	    case 2: index = new BpTreeMap<> (KeyType.class, Comparable [].class);
+		break;
+	    case 3: index = new LinHashMap<>(KeyType.class,Comparable[].class);
+		break;
+	    default: index = new TreeMap<>();
+	    }
 	//index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	index     = new BpTreeMap <> (KeyType.class, Comparable [].class);
+	//index     = new BpTreeMap <> (KeyType.class, Comparable [].class);
 	//index     = new LinHashMap <> (KeyType.class, Comparable [].class);
 	//index = new HashMap<>(KeyType.class, Comparable [].class);
     } // constructor
@@ -99,19 +113,31 @@ public class Table
      * @param _domain     the string containing attribute domains (data types)
      * @param _key        the primary key
      * @param _tuples      the list of tuples containing the data
+     * @param map         identifier for which type of index data structure to use
      */
     public Table (String _name, String [] _attribute, Class [] _domain, String [] _key,
-		  List <Comparable []> _tuples)
+		  List <Comparable []> _tuples, int map)
     {
 	name      = _name;
 	attribute = _attribute;
 	domain    = _domain;
 	key       = _key;
+	indexType = map;
 	//tuples    = _tuples;
 	tuples = new ArrayList<> ();
 	//index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
-	index     = new LinHashMap<>(KeyType.class, Comparable [].class);
+	//index     = new LinHashMap<>(KeyType.class, Comparable [].class);
 	//index     = new BpTreeMap<>(KeyType.class, Comparable [].class);
+	switch (map)
+	    {
+	    case 1: index = new TreeMap<>();
+		break;
+	    case 2: index = new BpTreeMap<> (KeyType.class, Comparable [].class);
+		break;
+	    case 3: index = new LinHashMap<>(KeyType.class,Comparable[].class);
+		break;
+	    default: index = new TreeMap<>();
+	    }
 	for(Comparable[] tuple : _tuples){
 	    insert(tuple);
 	}
@@ -125,12 +151,14 @@ public class Table
      * @param attributes  the string containing attributes names
      * @param domains     the string containing attribute domains (data types)
      * @param _key        the primary key for the table
+     * @param map         identifier for which type of index data structure to use
      */
-    public Table (String name, String attributes, String domains, String _key)
+    public Table (String name, String attributes, String domains, String _key, int map)
     {
-	this (name, attributes.split (" "), findClass (domains.split (" ")), _key.split(" "));
+	this (name, attributes.split (" "), findClass (domains.split (" ")), _key.split(" "), map);
+	
 
-	out.println ("DDL> create table " + name + " (" + attributes + ")");
+	//out.println ("DDL> create table " + name + " (" + attributes + ")");
     } // constructor
 
     //----------------------------------------------------------------------------------
@@ -154,7 +182,7 @@ public class Table
 	String [] attrs={};
 	List <Comparable []> rows = new ArrayList <> ();
 
-	out.println ("RA> " + name + ".project (" + attributes + ")");
+	//out.println ("RA> " + name + ".project (" + attributes + ")");
 	//Check for empty attributes
 	if(attributes.trim().length()!=0){
 	     	attrs     = attributes.split (" ");
@@ -177,7 +205,7 @@ public class Table
 		    rows.add(newTuple);
 		}
 	}
-	return new Table (name + count++, attrs, colDomain, newKey, rows);
+	return new Table (name + count++, attrs, colDomain, newKey, rows,this.indexType);
     } // project
 
     /************************************************************************************
@@ -190,11 +218,11 @@ public class Table
      */
     public Table select (Predicate <Comparable []> predicate)
     {
-	out.println ("RA> " + name + ".select (" + predicate + ")");
+	//out.println ("RA> " + name + ".select (" + predicate + ")");
 
 	return new Table (name + count++, attribute, domain, key,
 			  tuples.stream ().filter (t -> predicate.test (t))
-			  .collect (Collectors.toList ()));
+			  .collect (Collectors.toList ()),this.indexType);
     } // select
 
     /************************************************************************************
@@ -206,14 +234,14 @@ public class Table
      */
     public Table select (KeyType keyVal)
     {
-	out.println ("RA> " + name + ".select (" + keyVal + ")");
+	//out.println ("RA> " + name + ".select (" + keyVal + ")");
 
 	List <Comparable []> rows = new ArrayList <> ();
 	Comparable[] row = this.index.get(keyVal);
 	
 	if(row!=null) rows.add(this.index.get(keyVal));
 	
-	return new Table (name + count++, attribute, domain, key, rows);
+	return new Table (name + count++, attribute, domain, key, rows,this.indexType);
     } // select
     
     /************************************************************************************
@@ -226,7 +254,7 @@ public class Table
      */
 
     public Table union (Table table2) {
-		out.println ("RA> " + name + ".union (" + table2.name + ")");
+	//out.println ("RA> " + name + ".union (" + table2.name + ")");
 		if(!(compatible(table2))) return null;
 
 		List <Comparable []> rows = new ArrayList <> ();
@@ -246,7 +274,7 @@ public class Table
 				}
 		    }
 		}
-		return new Table (name + count++, attribute, domain, key, rows);
+		return new Table (name + count++, attribute, domain, key, rows,this.indexType);
     } // union
 	
     
@@ -262,7 +290,7 @@ public class Table
      */
     public Table minus (Table table2)
     {
-	out.println ("RA> " + name + ".minus (" + table2.name + ")");
+	//out.println ("RA> " + name + ".minus (" + table2.name + ")");
 	if (! compatible (table2)) return null;
 
 	List <Comparable []> rows = new ArrayList <> ();
@@ -272,7 +300,7 @@ public class Table
 	    .collect(Collectors.toList()); 
 	    
 
-	return new Table (name + count++, attribute, domain, key, rows);
+	return new Table (name + count++, attribute, domain, key, rows,this.indexType);
     } // minus
 
     /************************************************************************************
@@ -289,8 +317,8 @@ public class Table
      */
     public Table join (String attributes1, String attributes2, Table table2)
     {
-	out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
-		     + table2.name + ")");
+	/*out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
+	  + table2.name + ")");*/
 	//this.print();
 	//table2.print();
 
@@ -321,7 +349,9 @@ public class Table
 	}
 
 	
-
+	joinOnPrimary1 = false;
+	joinOnPrimary2 = false;
+	
         if(joinOnPrimary1){
 	    //System.out.println("joining primary 1");
 	    int i = 0;
@@ -392,7 +422,7 @@ public class Table
 	/*return new Table (name + count++, ArrayUtil.concat (attribute, table2Attributes),
 	  ArrayUtil.concat (domain, table2.domain), key, rows);*/
 	return new Table (name + count++, ArrayUtil.concat (attribute, table2Attributes),
-			  ArrayUtil.concat (domain, table2.domain), ArrayUtil.concat(attribute,table2Attributes), rows);
+			  ArrayUtil.concat (domain, table2.domain), ArrayUtil.concat(attribute,table2Attributes), rows,this.indexType);
     } // join
  
     /************************************************************************************
@@ -407,7 +437,7 @@ public class Table
      */
     public Table join (Table table2)
     {
-	out.println ("RA> " + name + ".join (" + table2.name + ")");
+	//out.println ("RA> " + name + ".join (" + table2.name + ")");
 
 	List <Comparable []> rows = new ArrayList <> ();
 
@@ -473,7 +503,7 @@ public class Table
      */
     public boolean insert (Comparable [] tup)
     {
-	out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
+	//out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
 
 	if (typeCheck (tup)) {
 	    tuples.add (tup);

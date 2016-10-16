@@ -32,7 +32,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     /** The maximum fanout (number of children) for a B+Tree node.
      *  May wish to increase for better performance for Program 3.
      */
-    private static final int ORDER = 4;
+    private static final int ORDER = 5;
 
     /** The maximum fanout (number of children) for a big B+Tree node.
      */
@@ -431,17 +431,17 @@ public class BpTreeMap <K extends Comparable <K>, V>
                     return rightTree;                     
                 }
                 if(!lt.isLeaf){
-            out.println("it got inside");
-            lt.nKeys--;
+		    //out.println("it got inside");
+		    lt.nKeys--;
+		}
+		
             }
-               
-            }
-                //  T O   B E   I M P L E M E N T E D
+	    //  T O   B E   I M P L E M E N T E D
         } // if
-        if (DEBUG) print (root, 0);
+        //if (DEBUG) print (root, 0);
         return rt;                                                               // return right node
     } // insert
-
+    
     /********************************************************************************
      * Make a new root, linking to left and right child node, seperated by a divider key.
      * @param ref0  the reference to the left child node
@@ -471,7 +471,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     private boolean wedge (K key, Object ref, Node n, int i, boolean left)
     {
         if (i < n.nKeys && key.compareTo(n.key[i]) == 0) {
-             out.println ("BpTreeMap.insert: attempt to insert duplicate key = " + key);
+	    //out.println ("BpTreeMap.insert: attempt to insert duplicate key = " + key);
              return false;
         } // if
         n.ref[n.nKeys + 1] = n.ref[n.nKeys];                          // preserving the last ref
@@ -559,11 +559,12 @@ public class BpTreeMap <K extends Comparable <K>, V>
             out.println ("key = " + i + " value = " + bpt.get (i));
         } // for
 	*/
+	
 	for (int i=1;i<lastKey;i++){
 	    out.println("key = " + i + " value = " + bpt.get(i));
-	}
-        //out.println ("-------------------------------------------");
-        //out.println("LastKey:" + bpt.lastKey());
+	}    
+	//out.println ("-------------------------------------------");
+	//out.println("LastKey:" + bpt.lastKey());
         //bpt.subMap(10, 15);
         //bpt.entrySet();
 	bpt2 = bpt.headMap(20);
@@ -573,7 +574,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
 	bpt2 = bpt.tailMap(20);
 	System.out.println("printing tail map:");
 	bpt2.print( bpt2.root, 0);
-
+	
 	bpt2 = bpt.subMap(10,30);
 	System.out.println("printing sub map:");
 	bpt2.print( bpt2.root, 0);
@@ -583,7 +584,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
         //bpt.tailMap(10);
         out.println ("Average number of nodes accessed = " + bpt.count / (double) totalKeys);
     } // main
-
+    
 } // BpTreeMap class
 
 
+    
