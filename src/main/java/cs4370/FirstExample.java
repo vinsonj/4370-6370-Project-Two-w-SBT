@@ -14,14 +14,15 @@ public class FirstExample {
 
     //  Database credentials
     //static final String USER = "root";
-    static final String USER = "nick";
-    static final String PASS = "mibandey";
+    static final String USER = "user";
+    static final String PASS = "user";
 
     public static void main(String[] args) {
 	Connection conn = null;
 	Statement stmt = null;
 	
 	try{
+	    System.out.println("HI!");
 	    //STEP 2: Register JDBC driver
 	    Class.forName("com.mysql.jdbc.Driver");
 	    //Class.forName("org.postgresql.Driver");
@@ -47,10 +48,10 @@ public class FirstExample {
 
 	    sql = "CREATE TABLE Student "        +
 		  "(id INTEGER not NULL, "       +
-		  " name VARCHAR(50) not NULL, " +
-		  " address VARCHAR(255), "      +
-		  " status VARCHAR(50))";
-	    
+		  " name VARCHAR(12) not NULL, " +
+		  " address VARCHAR(15), "      +
+		  " status VARCHAR(15))";
+	    System.out.println("Adding table: Student");
 	    stmt.executeUpdate(sql);
 	    
 	    test.addRelSchema ("Professor",
@@ -61,11 +62,11 @@ public class FirstExample {
 
 	    sql = "CREATE TABLE Professor "      +
 		  "(id INTEGER not NULL, "       +
-		  " name VARCHAR(50) not NULL, " +
-		  " deptId VARCHAR(50))";
-	    
-	    stmt.executeUpdate(sql);
-        
+		  " name VARCHAR(12) not NULL, " +
+		  " deptId VARCHAR(15))";
+
+	    System.out.println("Adding table: Professor");
+	    stmt.executeUpdate(sql);        
 	    test.addRelSchema ("Course",
 			       "crsCode deptId crsName descr",
 			       "String String String String",
@@ -73,11 +74,11 @@ public class FirstExample {
 			       null);
 	    
 	    sql = "CREATE TABLE Course "            +
-		  "(crsCode VARCHAR(50) not NULL, " +
-		  " deptId VARCHAR(50) not NULL, "  +
-	          " crsName VARCHAR(255), "         +
-		  " descr VARCHAR(255))" ;
-	    
+		  "(crsCode VARCHAR(15) not NULL, " +
+		  " deptId VARCHAR(15) not NULL, "  +
+	          " crsName VARCHAR(15), "         +
+		  " descr VARCHAR(15))" ;
+	    System.out.println("Adding table: course");
 	    stmt.executeUpdate(sql);
 	    
 	    test.addRelSchema ("Teaching",
@@ -87,10 +88,12 @@ public class FirstExample {
 			       new String [][] {{ "profId", "Professor", "id" },
 						{ "crsCode", "Course", "crsCode" }});
 
-	    sql = "CREATE TABLE Teaching "           +
-		  "(crsCode VARCHAR(50) not NULL, " +
-		  " semester VARCHAR(50) not NULL, " +
-		  " profId INTEGER );";
+	    sql = "CREATE TABLE Teaching "            +
+		  "(crsCode VARCHAR(15) not NULL, "   +
+		  " semester VARCHAR(15) not NULL, "  +
+		  " profId INTEGER)" ;
+	    
+	    System.out.println("Adding table: Teaching");
 	    stmt.executeUpdate(sql);
 	    
 	    test.addRelSchema ("Transcript",
@@ -104,21 +107,42 @@ public class FirstExample {
 
 	    sql = "CREATE TABLE Transcript " +
 		  "(studId INTEGER not NULL, " +
-		  " crsCode VARCHAR(50) not NULL, " +
-		  " semester VARCHAR(50) not NULL," +
-		  " grade VARCHAR(50) );";
+		  " crsCode VARCHAR(15) not NULL, " +
+		  " semester VARCHAR(15) not NULL," +
+		  " grade VARCHAR(15) )";
+	    System.out.println("Adding table: Transcript");
 	    stmt.executeUpdate(sql);
 	    
 	    //String [] tables = { "Student", "Professor", "Course", "Teaching", "Transcript" };
 	    //Table [] tables2 = {Student, Professor, Course, Teaching, Transcript};
 	    
-	    //int tups [] = new int [] { 10000, 1000, 2000, 50000, 5000 };
+	    //int tups [] = new int [] { 10000 , 1000 , 2000 , 50000 , 5000 };
 	    //int num = Integer.parseInt(args[0]);
-	    int tups [] = new int [] { 100 , 100 , 100 , 100 , 100 };
+	    int tups []   = new int [] { 10000 , 1000 , 2000 , 50000 , 5000 };
 	    
 	    Comparable [][][] resultTest = test.generate (tups);
 	    
 	    for (int i = 0; i < resultTest.length; i++) {
+		switch(i)
+		    {
+		    case 0:
+			System.out.println("Adding to students.");
+			break;
+		    case 1:
+			System.out.println("Adding to Professors.");
+			break;
+		    case 2:
+			System.out.println("Adding to Course.");
+			break;
+		    case 3:
+			System.out.println("Adding to Teaching.");
+			break;
+		    case 4:
+			System.out.println("Adding to Transcript.");
+			break;
+		    default:
+			break;
+		    }
 		//out.println (tables [i]);
 		//out.println ( tables2[i].getName() );
 		for (int j = 0; j < resultTest [i].length; j++) {
@@ -135,6 +159,7 @@ public class FirstExample {
 				resultTest[i][j][1] + "','" +
 				resultTest[i][j][2] + "','" +
 				resultTest[i][j][3] + "')" ;
+			    System.out.println("Adding row into Student");
 			    stmt.executeUpdate(sql);
 			    break;
 			case 1:
@@ -142,6 +167,7 @@ public class FirstExample {
 				resultTest[i][j][0] + ",'"  +
 				resultTest[i][j][1] + "','" +
 				resultTest[i][j][2] + "')" ;
+			    System.out.println("Adding row into Professor");
 			    stmt.executeUpdate(sql);
 			    break;
 			case 2:
@@ -150,6 +176,7 @@ public class FirstExample {
 				resultTest[i][j][1] + "','" +
 				resultTest[i][j][2] + "','" +
 				resultTest[i][j][3] + "')" ;
+			    System.out.println("Adding row into Course");
 			    stmt.executeUpdate(sql);
 			    break;
 			case 3:
@@ -157,6 +184,8 @@ public class FirstExample {
 				resultTest[i][j][0] + "','"  +
 				resultTest[i][j][1] + "'," +
 				resultTest[i][j][2] + ")" ;
+			    
+			    System.out.println("Adding row into Teaching");
 			    stmt.executeUpdate(sql);
 			    break;
 			case 4:
@@ -165,6 +194,7 @@ public class FirstExample {
 				resultTest[i][j][1] + "','" +
 				resultTest[i][j][2] + "','" +
 				resultTest[i][j][3] + "')" ;
+			    System.out.println("Adding row into Transcript");
 			    stmt.executeUpdate(sql);
 			    break;
 			default:
