@@ -1,0 +1,89 @@
+mysql> source /home/jason/school/dbMGMT/4370-6370-Project-Two-w-SBT/SQL_Files/MySQL_Jason_UNOPT.sql;
+Database changed
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
++------------+
+| name       |
++------------+
+| name819113 |
+| name814015 |
++------------+
+2 rows in set (0.29 sec)
+
++----------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Query_ID | Duration     | Query                                                                                                                                                                                                                                                                                                        |
++----------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|       31 |   0.29689800 | SELECT name FROM Student, Transcript, Course 
+WHERE Student.id = Transcript.studId 
+AND       Transcript.crsCode = Course.crsCode 
+AND       deptId = 'deptId916209' 
+AND       Student.name 
+NOT IN       ( SELECT name 
+	FROM Student, Transcript, Course 
+	WHERE Student.id = Transcript.studId 
+	AND     |
+|       32 |   0.00038875 | SELECT DATABASE()                                                                                                                                                                                                                                                                                            |
+|       33 |   0.00030050 | SET profiling = 1                                                                                                                                                                                                                                                                                            |
+|       34 |   0.27668200 | SELECT name FROM Student, Transcript, Course 
+WHERE Student.id = Transcript.studId 
+AND       Transcript.crsCode = Course.crsCode 
+AND       deptId = 'deptId916209' 
+AND       Student.name 
+NOT IN       ( SELECT name 
+	FROM Student, Transcript, Course 
+	WHERE Student.id = Transcript.studId 
+	AND     |
+|       35 |   0.00049075 | SELECT DATABASE()                                                                                                                                                                                                                                                                                            |
+|       36 |   0.00030825 | SET profiling = 1                                                                                                                                                                                                                                                                                            |
+|       37 |   0.04587475 | SELECT name
+FROM Student
+WHERE id = 199479                                                                                                                                                                                                                                                                   |
+|       38 |   0.08736700 | SELECT name
+FROM Student
+WHERE id >= 100000 AND id <= 900000                                                                                                                                                                                                                                                 |
+|       39 |   0.03165925 | SELECT name
+FROM Student, Transcript
+WHERE  id = studId AND crsCode = 'crsCode968614'                                                                                                                                                                                                                        |
+|       40 |   0.00670325 | SELECT Student.name
+FROM Student, Professor, Teaching, Transcript
+WHERE Student.id = Transcript.studId AND
+      Teaching.semester = Transcript.semester AND Teaching.crsCode = Transcript.crsCode AND
+      Teaching.profId = Professor.id AND
+      Professor.name = 'name642723'                          |
+|       41 |   0.01031675 | SELECT name
+FROM Student, Transcript, Course
+WHERE Student.id = Transcript.studId AND
+      Transcript.crsCode = Course.crsCode AND
+      deptId = 'deptId551560' AND
+      Student.name NOT IN
+      (
+	SELECT name
+	FROM Student, Transcript, Course
+	WHERE Student.id = Transcript.studId AND
+      	     |
+|       42 | 176.38569425 | SELECT name
+FROM Student, Transcript, Course
+WHERE Student.id = Transcript.studId AND
+      Transcript.crsCode = Course.crsCode AND NOT EXISTS
+      (
+	SELECT crsCode
+	FROM Course
+	WHERE deptId = 'deptId615497' AND
+	      Course.crsCode NOT IN
+	      (
+		SELECT crsCode
+		FROM Transcript
+		WHERE Stud |
+|       43 |   0.00037950 | SELECT DATABASE()                                                                                                                                                                                                                                                                                            |
+|       44 |   0.00024100 | SET profiling = 1                                                                                                                                                                                                                                                                                            |
+|       45 |   0.28948225 | SELECT name FROM Student, Transcript, Course 
+WHERE Student.id = Transcript.studId 
+AND       Transcript.crsCode = Course.crsCode 
+AND       deptId = 'deptId916209' 
+AND       Student.name 
+NOT IN       ( SELECT name 
+	FROM Student, Transcript, Course 
+	WHERE Student.id = Transcript.studId 
+	AND     |
++----------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+15 rows in set, 1 warning (0.00 sec)

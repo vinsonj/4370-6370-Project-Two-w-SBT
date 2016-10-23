@@ -1,0 +1,26 @@
+
+AFTER MOVING SELECT STATEMENTS:
+
+university=# \i '/home/jason/school/dbMGMT/4370-6370-Project-Two-w-SBT/SQL_Files/Jason_PostgreSQL_Optimized.sql'
+Timing is on.
+    name    
+------------
+ name636425
+ name421111
+(2 rows)
+
+Time: 28.461 ms
+
+
+
+AFTER ADDING INDEXES:
+
+university=# \i '/home/jason/school/dbMGMT/4370-6370-Project-Two-w-SBT/SQL_Files/Jason_PostgreSQL_Optimized.sql'
+Timing is on.
+    name    
+------------
+ name636425
+ name421111
+(2 rows)
+
+Time: 19.179 ms

@@ -1,0 +1,33 @@
+Select statements were moved down in the query to reduce the number of joins performed.
+For example, 
+
+SELECT name FROM Student, Transcript, Course 
+WHERE Student.id = Transcript.studId 
+AND       Transcript.crsCode = Course.crsCode 
+AND       deptId = 'deptId916209' 
+AND       Student.name 
+NOT IN       ( SELECT name 
+	FROM Student, Transcript, Course 
+	WHERE Student.id = Transcript.studId 
+	AND             Transcript.crsCode = Course.crsCode 
+	AND             deptId = 'deptId632332'       );
+
+The above unoptimized query performs a cross-product on Student, Transcript, and Course, then filters out the tuples we don't need.
+
+SELECT name FROM Student JOIN ( SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId916209' ) AS T1 ON Transcript.crsCode = T1.crsCode WHERE studId NOT IN (SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId632332') AS T2 ON Transcript.crsCode = T2.crsCode )) as T3 ON Student.id = T3.studId;
+
+The above optimized query uses select statements to filter relevant information before tables are joined to cut back on the number of joins performed overall.
+
+Also, indexes were added to speed up SELECT queries and WHERE clauses. For example:
+
+ALTER TABLE Student ADD INDEX (id);
+
+ALTER TABLE Student ADD INDEX (name);
+
+ALTER TABLE Transcript ADD INDEX (studId);
+
+ALTER TABLE Course ADD INDEX (deptId);
+
+For MySQL, the difference between the unoptimized query vs. the optimized one was: 0.29689800sec vs. 0.11972750sec
+
+For PostGreSQL, the difference between the unoptimized query vs. the optimized one was: 37.752ms vs. 19.179 ms

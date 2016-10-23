@@ -1,0 +1,74 @@
+
+AFTER MOVING SELECT STATEMENTS:
+
+mysql> source /home/jason/school/dbMGMT/4370-6370-Project-Two-w-SBT/SQL_Files/Jason_MySQL_Optimized.sql ;
+Database changed
+Query OK, 0 rows affected, 1 warning (0.13 sec)
+
++------------+
+| name       |
++------------+
+| name819113 |
+| name814015 |
++------------+
+2 rows in set (0.22 sec)
+
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Query_ID | Duration   | Query                                                                                                                                                                                                                                                                                                        |
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|        1 | 0.22724350 | SELECT name FROM Student JOIN ( SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId916209' ) AS T1 ON Transcript.crsCode = T1.crsCode WHERE studId NOT IN (SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId632332') AS T2 ON Transcript.crsCode |
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set, 1 warning (0.00 sec)
+
+
+
+
+
+
+
+AFTER ADDING INDEXES:
+
+mysql> source /home/jason/school/dbMGMT/4370-6370-Project-Two-w-SBT/SQL_Files/Jason_MySQL_Optimized.sql ;
+Database changed
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (1.31 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+Query OK, 0 rows affected, 1 warning (2.97 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+Query OK, 0 rows affected, 1 warning (1.96 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+Query OK, 0 rows affected, 1 warning (0.96 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
++------------+
+| name       |
++------------+
+| name814015 |
+| name819113 |
++------------+
+2 rows in set (0.12 sec)
+
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Query_ID | Duration   | Query                                                                                                                                                                                                                                                                                                        |
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|       13 | 0.11972750 | SELECT name FROM Student JOIN ( SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId916209' ) AS T1 ON Transcript.crsCode = T1.crsCode WHERE studId NOT IN (SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId632332') AS T2 ON Transcript.crsCode |
+|       14 | 0.00043925 | SELECT DATABASE()                                                                                                                                                                                                                                                                                            |
+|       15 | 0.00036200 | SET profiling = 1                                                                                                                                                                                                                                                                                            |
+|       16 | 1.34609450 | ALTER TABLE Student ADD INDEX (id)                                                                                                                                                                                                                                                                           |
+|       17 | 1.64074325 | ALTER TABLE Student ADD INDEX (name)                                                                                                                                                                                                                                                                         |
+|       18 | 1.47485525 | ALTER TABLE Transcript ADD INDEX (studId)                                                                                                                                                                                                                                                                    |
+|       19 | 1.35117125 | ALTER TABLE Course ADD INDEX (deptId)                                                                                                                                                                                                                                                                        |
+|       20 | 0.15623650 | SELECT name FROM Student JOIN ( SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId916209' ) AS T1 ON Transcript.crsCode = T1.crsCode WHERE studId NOT IN (SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId632332') AS T2 ON Transcript.crsCode |
+|       21 | 0.00055725 | SELECT DATABASE()                                                                                                                                                                                                                                                                                            |
+|       22 | 0.00040300 | SET profiling = 1                                                                                                                                                                                                                                                                                            |
+|       23 | 1.31550825 | ALTER TABLE Student ADD INDEX (id)                                                                                                                                                                                                                                                                           |
+|       24 | 2.96913875 | ALTER TABLE Student ADD INDEX (name)                                                                                                                                                                                                                                                                         |
+|       25 | 1.96119975 | ALTER TABLE Transcript ADD INDEX (studId)                                                                                                                                                                                                                                                                    |
+|       26 | 0.96141525 | ALTER TABLE Course ADD INDEX (deptId)                                                                                                                                                                                                                                                                        |
+|       27 | 0.11564625 | SELECT name FROM Student JOIN ( SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId916209' ) AS T1 ON Transcript.crsCode = T1.crsCode WHERE studId NOT IN (SELECT studId FROM Transcript JOIN ( SELECT * FROM Course WHERE deptId = 'deptId632332') AS T2 ON Transcript.crsCode |
++----------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+15 rows in set, 1 warning (0.00 sec)
